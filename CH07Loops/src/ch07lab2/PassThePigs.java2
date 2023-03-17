@@ -1,0 +1,117 @@
+package ch07lab2;
+
+import java.util.Random;
+import java.util.Scanner;
+
+/**
+ * uses loops, constants, and conditional to replicate the game Pass the Pigs
+ * 2020-04-15
+ * @author Matt N.
+ * @author Jose G.
+ */
+public class PassThePigs {
+    private static Scanner scnr = new Scanner(System.in);               // gets user input
+
+    final private static String NO_DOT_NAME = "Sider (dot)";            // Sider (w/o dot) DISP text
+    final private static String DOT_NAME = "Sider (no dot)";            // Sider (w/ dot) DISP text
+    final private static String TROTTER_NAME = "Trotter";               // Trotter DISP text
+    final private static String RAZORBACK_NAME = "Razorback";           // Razorback DISP text
+    final private static String SNOUTER_NAME = "Snouter";               // Snouter DISP text
+    final private static String LEANING_JOWLER_NAME = "Leaning Jowler"; // Leaning Jownler DISP text
+
+    final private static int NO_DOT_SCORE = 0;                          // Sider (w/o dot) score
+    final private static int DOT_SCORE = 0;                             // Sider (w/ dot) score
+    final private static int TROTTER_SCORE = 5;                         // Trotter score
+    final private static int RAZORBACK_SCORE = 5;                       // Razorback score
+    final private static int SNOUTER_SCORE = 10;                        // Snouter score
+    final private static int LEANING_JOWLER_SCORE = 15;                 // Leaning Jowler
+
+    final private static int NO_DOT_PCT = 33;                           // Sider (w/o dot) chance
+    final private static int DOT_PCT = 66;                              // Sider (w/ dot) chance
+    final private static int TROTTER_PCT = 76;                          // Trotter chance
+    final private static int RAZORBACK_PCT = 96;                        // Razorback chance
+    final private static int SNOUTER_PCT = 99;                          // Snouter chance
+    final private static int LEANING_JOWLER_PCT = 100;                  // Jowler chance
+
+    /**
+     * description: plays Pass the Pigs and continues the game until the user quits or pigs out.
+     * @param args ignored
+     */
+    public static void main(String[] args) {
+        String lastPig;                                                 // previously rolled pig
+        String currentPig;                                              // pig being rolled
+        int lastPigScore;                                               // previous pig's score
+        int currentPigScore;                                            // current pig's score
+        int rollScore;                                                  // score for a single cycle
+        int totalTurnScore;                                             // score for an entire turn
+        int randNum;                                                    // randomly generated number
+        Random randNumGenerator = new Random();                         // random number generator
+
+        totalTurnScore = 0;
+        do {
+            lastPig = "";
+            currentPig = "";
+            lastPigScore = 0;
+            currentPigScore = 0;
+            rollScore = 0;
+            randNum = randNumGenerator.nextInt(100);
+            for (int i = 0; i < 2; i++) {
+                currentPig = "";
+                currentPigScore = 0;
+                if (randNum <= NO_DOT_PCT) {
+                    currentPig = NO_DOT_NAME;
+                    currentPigScore += NO_DOT_SCORE;
+                } else if (randNum <= DOT_PCT && randNum > NO_DOT_PCT) {
+                    currentPig = DOT_NAME;
+                    currentPigScore += DOT_SCORE;
+                } else if (randNum <= TROTTER_PCT && randNum > DOT_PCT) {
+                    currentPig = TROTTER_NAME;
+                    currentPigScore += TROTTER_SCORE;
+                } else if (randNum <= RAZORBACK_PCT && randNum > TROTTER_PCT) {
+                    currentPig = RAZORBACK_NAME;
+                    currentPigScore += RAZORBACK_SCORE;
+                } else if (randNum <= SNOUTER_PCT && randNum > RAZORBACK_PCT) {
+                    currentPig = SNOUTER_NAME;
+                    currentPigScore += SNOUTER_SCORE;
+                } else if (randNum <= LEANING_JOWLER_PCT && randNum > SNOUTER_PCT) {
+                    currentPig = LEANING_JOWLER_NAME;
+                    currentPigScore += LEANING_JOWLER_SCORE;
+                }
+                if (i == 0){
+                    lastPig = currentPig;
+                    lastPigScore = currentPigScore;
+                }
+            }
+
+            System.out.printf("Rolling... %s & %s \n", lastPig, currentPig);
+
+            if (lastPig.equalsIgnoreCase(currentPig)){
+                rollScore += 2 * (lastPigScore + currentPigScore);
+            }
+
+            if (
+                    (lastPig.equals(NO_DOT_NAME) || lastPig.equals(DOT_NAME)) &&
+                    (currentPig.equals(NO_DOT_NAME) || currentPig.equals(DOT_NAME)) &&
+                    (!lastPig.equalsIgnoreCase(currentPig))
+            ){
+                rollScore = 0;
+                totalTurnScore = 0;
+                System.out.println("Pig out! No score.");
+                System.out.println("Your turn is over");
+                break;
+            }
+
+            if (
+                    lastPig.equalsIgnoreCase(currentPig) &&
+                    (lastPig.equals(NO_DOT_NAME) || lastPig.equals(DOT_NAME))
+            ){
+                rollScore = 1;
+            }
+
+            totalTurnScore += rollScore;
+            System.out.println("this roll: " + rollScore);
+            System.out.println("this turn: " + totalTurnScore);
+            System.out.print("Roll again (y/n)? ");
+        } while (scnr.next().equalsIgnoreCase("y"));
+    }
+}
